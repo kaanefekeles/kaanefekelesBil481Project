@@ -7,3 +7,4 @@ if the given argument numbers were 32 84 35 it would return false. while given n
 if the given argument numbers were 1 56 8 it would return false since all three dont exist on the array
 if the given argument numbers were 65 68 99 it would return false although 65 and 68 do exist in the array in the given order 99 does not.
 [![Build Status](https://www.travis-ci.com/kaanefekeles/mydemoapp.svg?branch=main)](https://www.travis-ci.com/kaanefekeles/mydemoapp)
+"Text for feature/xyz testing"
