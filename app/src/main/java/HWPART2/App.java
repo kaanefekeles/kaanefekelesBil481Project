@@ -5,14 +5,80 @@ package HWPART2;
 
 import java.util.ArrayList;
 
+import static spark.Spark.get;
+import static spark.Spark.port;
+import static spark.Spark.post;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import spark.ModelAndView;
+import spark.template.mustache.MustacheTemplateEngine;
+
+
 public class App {
     public String getGreeting() {
         return "Hello World!";
     }
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        //port(getHerokuAssignedPort());
+
+        get("/", (req, res) -> "Welcome to subsequent subset checker!");
+
+        post("/subsequentSubsetController", (req, res) -> {
+          //System.out.println(req.queryParams("input1"));
+          //System.out.println(req.queryParams("input2"));
+
+          String input1 = req.queryParams("input1");
+          java.util.Scanner sc1 = new java.util.Scanner(input1);
+          sc1.useDelimiter("[;\r\n]+");
+          java.util.ArrayList<Integer> input1List = new java.util.ArrayList<>();
+          java.util.ArrayList<Integer> input2List = new java.util.ArrayList<>();
+
+          
+          while (sc1.hasNext())
+          {
+            int value = Integer.parseInt(sc1.next().replaceAll("\\s",""));
+            input1List.add(value);
+          }
+          sc1.close();
+          //System.out.println(inputList);
+
+
+          String input2 = req.queryParams("input2");
+          java.util.Scanner sc2 = new java.util.Scanner(input2);
+          sc2.useDelimiter("[;\r\n]+");
+          while (sc2.hasNext())
+          {
+            int value = Integer.parseInt(sc2.next().replaceAll("\\s",""));
+            input2List.add(value);
+          }
+          sc2.close();
+          boolean result = false;
+          if(input2List.size()==3){
+              result = App.subsequentSubsetController(input1List, input2List.get(0),input2List.get(1),input2List.get(2));
+          }       
+          Map<String, String> map = new HashMap<String, String>();
+          if(result){
+              map.put("result", "CORRECT! Congrats! The three integers you gave exist subsequently in the array you gave!");
+          }else{
+              map.put("result", "FAILURE! Oops! Either the three integers you gave dont exist subsequently in the array or you have given faulty arguments :(");
+          }
+          return new ModelAndView(map, "subsequentSubsetContoller.mustache");
+        }, new MustacheTemplateEngine());
+
+
+        get("/subsequentSubsetController",
+            (rq, rs) -> {
+              Map<String, String> map = new HashMap<String, String>();
+              map.put("result", "not calculated yet!");
+              return new ModelAndView(map, "subsequentSubsetContoller.mustache");
+            },
+            new MustacheTemplateEngine());
     }
+
+
     public static boolean subsequentSubsetController(ArrayList<Integer> array, int first,int second,int third) {
         //checks if the given integers are present in the array with the given order 
         // for example let say the given array is 5 8 9 6 7 1 3 85 8   and the given inputs are 6 7 1 
